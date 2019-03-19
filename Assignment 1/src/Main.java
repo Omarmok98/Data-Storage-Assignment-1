@@ -39,8 +39,33 @@ public class Main {
 			}
 			else if(choice == 3)
 			{
+				Product update_p = new Product();
+				int update_choice;
 				System.out.println("Please enter your product id: ");
-				manager.searchProduct(in.nextInt());
+				update_p = manager.searchProduct(in.nextInt());
+				System.out.println("What do you want to update ?");
+				System.out.println("	1-Price.");
+				System.out.println("	2-Quantity.");
+				System.out.println("	3-Both.");
+				update_choice = in.nextInt();
+				if(update_choice == 1)
+				{
+					System.out.println("Please enter your new Price: ");update_p.setPrice(in.nextInt());
+					update_p.updateProduct();
+					Product.printProduct(update_p);
+				}else if(update_choice == 2)
+				{
+					System.out.println("Please enter your new Quantity: ");update_p.setQuantity(in.nextInt());
+					update_p.updateProduct();
+					Product.printProduct(update_p);
+				}else if(update_choice == 3)
+				{
+					System.out.println("Please enter your new Price: ");update_p.setPrice(in.nextInt());
+					System.out.println("Please enter your new Quantity: ");update_p.setQuantity(in.nextInt());
+					update_p.updateProduct();
+					Product.printProduct(update_p);
+				}
+				
 				System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 			}
 			else if(choice == 4)

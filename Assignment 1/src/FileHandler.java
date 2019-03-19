@@ -87,20 +87,20 @@ public class FileHandler {
 		while(pointer != index_file_eof)
 		{
 			curr.readIndex(pointer);
-			Index.printIndex(curr);
-			System.out.println(curr.getProduct_id() +"->"+ new_.getProduct_id());
 			if(curr.getProduct_id() > new_.getProduct_id())
 			{
 				new_.writeIndex(pointer);
 				new_.setProduct_id(curr.getProduct_id());
 				new_.setOffset(curr.getOffset());
-				Index.printIndex(new_);
 			}
 			pointer = pointer + 8;
 		}
 		new_.writeIndex(pointer);
 		updateMetaData();
-		//Index.readAllIndex();
+	}
+	public void deleteProduct(Product p) throws IOException
+	{
+		
 	}
 	  
 }

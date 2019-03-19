@@ -79,6 +79,15 @@ public class Product {
 		data_file.writeInt(this.quantity);
 		data_file.close();
 	}
+	public void updateProduct() throws IOException //write a product at the end of file
+	{
+		RandomAccessFile data_file = new RandomAccessFile(fileName,"rw");
+		data_file.seek(this.offset);
+		data_file.writeInt(this.id);
+		data_file.writeInt(this.price);
+		data_file.writeInt(this.quantity);
+		data_file.close();
+	}
 	
 	
 	public int getOffset() {
