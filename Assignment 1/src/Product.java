@@ -59,7 +59,7 @@ public class Product {
 	}
 	public static void writeRandomProduct(Product p) throws IOException //write a random product at the end of file
 	{
-		RandomAccessFile data_file = new RandomAccessFile(fileName,"r");
+		RandomAccessFile data_file = new RandomAccessFile(fileName,"rw");
 		data_file.seek(data_file.length());
 		p.setOffset((int)data_file.getFilePointer());
 		data_file.writeInt(p.getId());
@@ -71,9 +71,18 @@ public class Product {
 	}
 	public void writeProduct() throws IOException //write a product at the end of file
 	{
-		RandomAccessFile data_file = new RandomAccessFile(fileName,"r");
+		RandomAccessFile data_file = new RandomAccessFile(fileName,"rw");
 		data_file.seek(data_file.length());
 		this.offset = (int) data_file.getFilePointer();
+		data_file.writeInt(this.id);
+		data_file.writeInt(this.price);
+		data_file.writeInt(this.quantity);
+		data_file.close();
+	}
+	public void updateProduct() throws IOException //write a product at the end of file
+	{
+		RandomAccessFile data_file = new RandomAccessFile(fileName,"rw");
+		data_file.seek(this.offset);
 		data_file.writeInt(this.id);
 		data_file.writeInt(this.price);
 		data_file.writeInt(this.quantity);

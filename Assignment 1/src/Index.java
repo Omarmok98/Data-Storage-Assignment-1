@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
@@ -11,12 +10,18 @@ public class Index {
 	Index() {
 
 	}
-
+	public static void printIndex(Index i)
+	{
+		System.out.println("---------------------");
+		System.out.println("Product ID: "+ i.getProduct_id());
+		System.out.println("Product offset: "+i.getOffset());
+	}
 	public void writeIndex(long pointer) throws IOException // write the index
 	{
 		RandomAccessFile index_file = new RandomAccessFile(fileName, "rw");
 		this.index_offset = (int) pointer;
 		index_file.seek(pointer);
+		System.out.println(pointer);
 		index_file.writeInt(this.product_id);
 		index_file.writeInt(this.offset);
 		index_file.close();
