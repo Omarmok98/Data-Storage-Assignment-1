@@ -10,7 +10,7 @@ public class FileHandler {
 	private int data_file_size = 0;
 	private static int index_file_size = 0;
 	private static int data_file_eof = 0;
-	private int index_file_eof = 0;
+	private static int index_file_eof = 0;
 
 	FileHandler() throws IOException {
 		RandomAccessFile data_file = new RandomAccessFile(DataFileName, "r");
@@ -22,7 +22,7 @@ public class FileHandler {
 
 		FileHandler.index_file_size = (int) index_file.length();
 		index_file.seek(index_file_size);
-		this.index_file_eof = (int) index_file.getFilePointer();
+		FileHandler.index_file_eof = (int) index_file.getFilePointer();
 
 		data_file.close();
 		index_file.close();
@@ -38,7 +38,7 @@ public class FileHandler {
 
 		FileHandler.index_file_size = (int) index_file.length();
 		index_file.seek(index_file_size);
-		this.index_file_eof = (int) index_file.getFilePointer();
+		FileHandler.index_file_eof = (int) index_file.getFilePointer();
 
 		data_file.close();
 		index_file.close();
@@ -68,7 +68,7 @@ public class FileHandler {
 		Index.readAllIndex();
 
 	}
-	public Product searchProduct(int p_id) throws IOException
+	public static Product searchProduct(int p_id) throws IOException
 	{
 		Product p = new Product();
 		int offset = Index.binarySearch(p_id);
@@ -98,9 +98,70 @@ public class FileHandler {
 		new_.writeIndex(pointer);
 		updateMetaData();
 	}
-	public void deleteProduct(Product p) throws IOException
+	public void deleteProduct(int x,Product p) throws IOException
 	{
+		Product.deleteProduct(p);
+		Index target = Index.binarySearchIndex(x);
+		Index.printIndex(target);
+		int pointer = target.getIndex_offset();
+		System.out.println(pointer);
+		Index next = new Index();
+		System.out.println(index_file_eof);
+		while(pointer <= index_file_eof)
+		{
+			int y = pointer + 8;
+			System.out.println(pointer+"->"+index_file_eof);
+			/*if(index_file_eof - pointer < 8)
+			{
+				break;
+			}*/
+			System.out.println("target");
+			Index.printIndex(target);
+			if(index_file_eof - pointer == 8)
+			{
+				Index.deleteLastRecord();
+				break;
+			}
+			next.readIndex(y);
+			System.out.println("next: "+y);
+			Index.printIndex(next);
+			target.setProduct_id(next.getProduct_id());
+			target.setOffset(next.getOffset());
+			next.writeIndex(pointer);
+			pointer = y;
+			
+		}
+		
+		//next.writeIndex(pointer);
+		updateMetaData();
 		
 	}
+	public void deleteProduct1(int x,Product p) throws IOException
+	{
+		Product.deleteProduct(p);
+		Index target = Index.binarySearchIndex(x);
+		int target_pointer = target.getIndex_offset();
+		int pointer = index_file_eof;
+		Index next = new Index();
+		Index curr = new Index(); 
+		while(pointer != target_pointer)
+		{
+			curr.readIndex(pointer-8);
+			next.readIndex(pointer-16);
+			
+			curr.writeIndex(pointer-16);
+			
+
+			next.setProduct_id(curr.getProduct_id());
+			next.setOffset(curr.getOffset());
+			pointer = pointer + 8;
+			
+		}
+		//Index.deleteLastRecord();
+		//next.writeIndex(pointer);
+		updateMetaData();
+		
+	}
+
 	  
 }

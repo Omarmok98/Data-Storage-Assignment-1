@@ -86,6 +86,36 @@ public class Index {
 		}
 		return -1;
 	}
+	public static Index binarySearchIndex(int x) throws IOException {
+		
+		RandomAccessFile index_file = new RandomAccessFile(fileName, "r");
+		int index_file_size = (int) index_file.length();
+		index_file.seek(index_file_size);
+		index_file.close();
+		
+		Index index = new Index();
+		int l = 0, r = index_file_size / 8;
+		while (l <= r) {
+			int m = l + (r - l) / 2;
+			index.readIndex(m * 8);
+
+			if (index.getProduct_id() == x)
+				return index;
+
+			if (index.getProduct_id() < x)
+				l = m + 1;
+
+			else
+				r = m - 1;
+		}
+		return index;
+	}
+	public static void deleteLastRecord() throws IOException
+	{
+		RandomAccessFile index_file = new RandomAccessFile(fileName, "rw");
+		index_file.setLength(index_file.length()-8);
+		index_file.close();
+	}
 
 	public int getProduct_id() {
 		return product_id;

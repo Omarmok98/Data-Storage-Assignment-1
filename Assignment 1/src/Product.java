@@ -27,10 +27,20 @@ public class Product {
 		data_file.seek(0);
 		while(data_file.getFilePointer() != eof)
 		{
-			System.out.println("ProductPointer: "+data_file.getFilePointer());
-			System.out.println("ProductID: "+data_file.readInt());
-			System.out.println("ProductPrice: "+data_file.readInt());
-			System.out.println("ProductQuantity: "+data_file.readInt());
+			//System.out.println("ProductPointer: "+data_file.getFilePointer());
+			if(checkDeleted(data_file.getFilePointer()) == true)
+			{
+				System.out.println("Record Deleted");
+				data_file.seek(data_file.getFilePointer()+12);
+				
+			}
+			else
+			{
+				System.out.println("ProductID: "+data_file.readInt());
+				System.out.println("ProductPrice: "+data_file.readInt());
+				System.out.println("ProductQuantity: "+data_file.readInt());
+			}
+			
 			System.out.println("------------------------------");
 		}
 		data_file.close();
@@ -39,10 +49,19 @@ public class Product {
 	{
 		RandomAccessFile data_file = new RandomAccessFile(fileName,"r");
 		data_file.seek(pointer);
-		this.offset = (int) pointer;
-		this.id = data_file.readInt();
-		this.price = data_file.readInt();
-		this.quantity = data_file.readInt();
+		if(checkDeleted(data_file.getFilePointer()) == true)
+		{
+			System.out.println("Record Deleted");
+			//data_file.seek(data_file.getFilePointer()+12);
+			
+		}
+		else
+		{
+			this.offset = (int) pointer;
+			this.id = data_file.readInt();
+			this.price = data_file.readInt();
+			this.quantity = data_file.readInt();
+		}
 		data_file.close();
 	}
 	public Product readRandomProduct() throws IOException // read a random product with address(offset) is unknown
@@ -87,6 +106,28 @@ public class Product {
 		data_file.writeInt(this.price);
 		data_file.writeInt(this.quantity);
 		data_file.close();
+	}
+	public static void deleteProduct(Product p) throws IOException
+	{
+		RandomAccessFile data_file = new RandomAccessFile(fileName,"rw");
+		char flag = '*';
+		data_file.seek((long)p.getOffset());
+		data_file.writeChar(flag);
+		data_file.close();
+	
+	}
+	public static boolean checkDeleted(long pointer) throws IOException
+	{
+		RandomAccessFile data_file = new RandomAccessFile(fileName,"r");
+		data_file.seek(pointer);
+		if(data_file.readChar() == '*')
+		{
+			data_file.close();
+			return true;
+		}
+		data_file.close();
+		return false;
+		
 	}
 	
 	
